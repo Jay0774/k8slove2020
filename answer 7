@@ -1,0 +1,26 @@
+# creating file q7.yml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2020-05-20T18:59:07Z"
+  labels:
+    adhoc: jayeshq7                                            
+    run: adhocpod7                                 
+  name: adhocpod7
+spec:
+  volumes:                                                
+  - name: adhoc/adhocoutput.txt                                        
+    emptyDir: {}                                      
+  containers:
+  - image: alpine
+    name: adhocpod7
+    volumeMounts:
+    - name: adhoc/adhocoutput.txt
+      mountPath: /mnt/data.txt
+    command: ["bin/sh","-c","while true ; do date >> /adhoc/adhocoutput.txt ; sleep 3 ; done"]
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status:
+  phase: Pending
+  qosClass: BestEffort
