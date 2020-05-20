@@ -1,0 +1,41 @@
+# cretae the docker file as adhochttpd.dockerfile.txt
+
+FROM centos
+maintainer  jayeshbudhwani1999@gmail.com
+RUN  yum  install httpd -y
+RUN  mkdir  /mycode
+ENV  x=app1
+COPY beginner-html-site-styled /mycode/beginner-html-site-styled
+COPY project-html-website /mycode/project-html-website
+COPY  start.sh  /mycode/start.sh
+RUN  chmod +x  /mycode/start.sh
+EXPOSE 80
+ENTRYPOINT  ["/bin/bash","/mycode/start.sh"]
+
+
+# create the start.sh file as
+
+
+#!/bin/bash
+
+if [[ "$x"=="app1" ]]
+then
+        cp -rf /mycode/beginner-html-site-styled/* /var/www/html
+        httpd -DFOREGROUND
+
+elif [[ "$x"=="app2" ]]
+then
+        cp -rf /mycode/microsoft/project-html-website/* /var/www/html
+        httpd -DFOREGROUND
+else
+        echo "sorry bro no files found try again " > /var/www/html/index.html
+        httpd -DFOREGROUND
+fi
+
+# after this create the image as
+
+docker build -t jayeshbudhwani1999/may2020q1:v1 -f adhochttpd.dockerfile.txt .
+
+# to puch the image to docker hub use command
+
+docker push jayeshbudhwani1999/may2020q1
