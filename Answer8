@@ -1,0 +1,43 @@
+# following changes are made in pod file 
+
+1. indentaion changed
+2. resources under conatainers
+3. status after spec
+4. protocol is also added
+5. change the creation time from null to some time
+6. change image name from ngix to nginx
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+   creationTimestamp: "2020-05-20T18:19:01Z"
+   labels:   #  is important if you want your application can get the traffic from service
+    x: hello  # label always be in key: value pair and it must be unique
+   name: podexam  # must be unique
+spec:
+ containers:
+  - image: ngix
+    name: pod1
+    ports:
+     - containerPort: 80
+       protocol: TCP
+    resources: {}
+ dnsPolicy: ClusterFirst
+ restartPolicy: Never
+status: {}
+
+# to create a service create file q8svc.yml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: wowo2020jayesh
+spec:
+ ports:
+  - name: q8svcjayesh
+    port: 4455
+    targetPort: 80
+ selector:
+  x: hello
+ type: NodePort
