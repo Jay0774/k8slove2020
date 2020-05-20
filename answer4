@@ -1,0 +1,42 @@
+# creating q4rs.tml
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+ name: adhocrsjayesh4
+ labels:
+  adhoc: jayeshq4
+  app: web1                 # this is the label of rc not label of pods
+spec:
+ selector: 
+  matchLabels:
+   adhoc: jayeshq4              # same label as of pod 
+ replicas: 3                # always one pod will be present even in case of current worker node failure
+ template: 
+  metadata: 
+   name: mypodrs1            # name of pod created by rc
+   labels:
+    adhoc: jayeshq4
+  spec:
+   containers:
+    - name: jayeshc1
+      image: jayeshbudhwani1999/may2020q1
+      
+      
+# creating svc
+
+apiVersion: v1
+kind: Service
+metadata:
+ name: q4svcjayesh
+spec:
+ ports:
+  - name: q4svcjayesh
+    port: 4499
+    targetPort: 80
+ selector:
+  adhoc: jayeshq4                        # label used previously
+ type: LoadBalancer                         # type NodePort
+  
+ 
+
