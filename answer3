@@ -1,0 +1,37 @@
+# creating the podfile q3.yml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2020-05-20T18:41:01Z"
+  labels:
+    adhoc: jayeshq3
+    run: adhocpod2
+  name: adhocpod2
+  namespace: jayeshpod
+spec:
+  containers:
+  - image: jayeshbudhwani1999/may2020q1
+    imagePullPolicy: Always
+    name: pod1
+    ports:
+    - containerPort: 80
+      protocol: TCP
+    env:
+    - name: x
+      value: app2
+
+# creating the service q3svc.yml
+
+apiVersion: v1
+kind: Service
+metadata:
+ name: q3svcjayesh
+spec:
+ ports:
+  - name: q3svcjayesh
+    port: 31554
+    targetPort: 80
+ selector:
+  adhoc: jayeshq2                        # label used previously
+ type: NodePort                         # type NodePort
