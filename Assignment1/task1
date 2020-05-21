@@ -1,0 +1,36 @@
+## TASK1:
+ Create 10 pods by name of  adhoc1-adhoc10 
+ Use alpine docker image with ping 8.8.8.8 as default entrypoint command 
+
+
+# first create a python file as task1.py with the following commands
+
+import os
+com = ' kubectl run adhoc{} --image=alpine --command "bin/sh" -- "-c" "ping 8.8.8.8"'
+for i in range(1,11):
+ os.system(com.format(i,i))
+ 
+# Then run the file it will create all 10 pod with required command
+
+python task1.py
+
+# To check the output use
+
+kubectl logs adhoc1
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+# important
+
+kubectl run <pod_name> --image=<image_name> --command <command_ to_run> -- <arguments>
+
+# EXAMPLE:
+
+kubectl run adhoc{} --image=alpine --command "bin/sh" -- "-c" "ping 8.8.8.8 
+
+
+
+
+
+
+
