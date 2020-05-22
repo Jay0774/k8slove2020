@@ -1,0 +1,51 @@
+# TASK2:
+● Create a pod  named nginxpod  and use nginx docker image  
+●  Use port 80 as container and service port   
+● Create a service nodeport type by exposing the pod  
+● Access web page and take screenshot of it   
+● After accessing the web page you need to write a shell |  python | go code in current running  nginxpod   
+● Script that you write it must connect to kube-apiversion and list all the running pods in k8s  cluster   
+● Store the output of above command  under  /usr/share/nginx/html/index.html   
+● Now reload the webpage take screenshot again   
+● You need to upload all YAML and screenshot related data in github with k8slove2020 repo   
+● Comment that github link in youtube video session and in My linked account. 
+
+
+# To create the pod use nginxpod.yml file as:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    x: hello
+    run: nginxpod
+  name: nginxpod
+spec:
+  containers:
+  - image: nginx
+    name: nginxpod
+    ports:
+    - containerPort: 80
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+
+# To run the service use nginxsvc.yml file as: 
+
+apiVersion: v1
+kind: Service
+metadata:
+ name: myservice1
+spec:
+ ports: 
+  - name: mysvcport
+    port: 4455 
+    targetPort: 80
+ selector:
+  x: hello
+ type: NodePort
+ 
+ # Now the output of above file is:
+ 
