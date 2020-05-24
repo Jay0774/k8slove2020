@@ -18,12 +18,12 @@ ENTRYPOINT  ["/bin/bash","/mycode/start.sh"]
 
 #!/bin/bash
 
-if [[ "$x"=="app1" ]]
+if [ "$x"=="app1" ]
 then
         cp -rf /mycode/beginner-html-site-styled/* /var/www/html
         httpd -DFOREGROUND
 
-elif [[ "$x"=="app2" ]]
+elif [ "$x"=="app2" ]
 then
         cp -rf /mycode/microsoft/project-html-website/* /var/www/html
         httpd -DFOREGROUND
@@ -31,6 +31,10 @@ else
         echo "sorry bro no files found try again " > /var/www/html/index.html
         httpd -DFOREGROUND
 fi
+
+# after creating the file start.sh if you see any errors related to else or elif use the following command to resolve it
+
+dos2unix start.sh
 
 # after this create the image as
 
