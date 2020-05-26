@@ -90,7 +90,7 @@ status:
   
  # for creating service create a yml file as q2svc.yml
  
- apiVersion: v1
+apiVersion: v1
 kind: Service
 metadata:
  name: q2svcjayesh
@@ -103,4 +103,7 @@ spec:
   adhoc: jayeshq2                        # label used previously
  type: NodePort                         # type NodePort
   
- 
+
+# run the service and pod file using
+
+kubectl create -f <file_name>
