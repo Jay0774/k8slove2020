@@ -1,0 +1,50 @@
+# creating q5dep1.yml file for deploynments
+
+# fisrt use command 
+
+kubectl create deployment adhocdepjayesh5 --image=jayeshbudhwani1999/may2020q1:v1 --dry-run=client -o yaml > q5dep1.yml
+
+# then in the q5dep1.yml file change labels as shown: 
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    adhoc: jayeshq5                                         # required label
+    app: adhocdepjayesh5
+  name: adhocdepjayesh5
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      adhoc: jayeshq5                                       # required label
+      app: adhocdepjayesh5
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        adhoc: jayeshq5                                     # required label
+        app: adhocdepjayesh5
+    spec:
+      containers:
+      - image: jayeshbudhwani1999/may2020q1:v1
+        name: may2020q1
+        ports:
+        - containerPort: 80
+        env:
+        - name: x
+          value: app2        
+        resources: {}
+status: {}
+
+# the create the deploynment as
+
+kubectl create -f q5dep1.yml -n jayesh                                        # -n jayesh for namespace
+
+# the create the service using expose command
+
+kubectl expose deployments adhocdepjayesh5 --type LoadBalancer --port 80 -n jayesh
+
+
