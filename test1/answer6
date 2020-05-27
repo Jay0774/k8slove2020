@@ -1,0 +1,45 @@
+# first create the pod file as portainer.yml with following contents
+
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    adhoc: jayeshq6
+    run: adhocpod6
+  name: adhocpod6
+spec:
+  containers:
+  - image: portainer/portainer
+    name: adhocpod6
+    ports:
+    - containerPort: 9000
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+# then create the service q6svc.yml file as
+
+apiVersion: v1
+kind: Service
+metadata:
+ name: q6svcjayesh
+spec:
+ ports: 
+  - name: mysvcport
+    port: 4456 
+    targetPort: 9000
+ selector:
+  adhoc: jayeshq6
+ type: NodePort        
+ 
+ 
+ # then create the pod and service using the following commands
+ 
+ kubectl create -f portainer.yml -n jayesh                                         # -n jayesh for namesapce
+ 
+ kubectl create -f q6svc.yml -n jayesh                                             # -n jayesh for namespace
+ 
+ # to check the pod and service creatio n us ecommands
+ 
+ kubectl get pods,svc -n jayesh --show-labels 
