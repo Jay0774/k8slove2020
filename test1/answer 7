@@ -8,19 +8,25 @@ metadata:
     adhoc: jayeshq7                                            
     run: adhocpod7                                 
   name: adhocpod7
-spec:
-  volumes:                                                
-  - name: adhoc/adhocoutput.txt                                        
-    emptyDir: {}                                      
+spec:                                   
   containers:
   - image: alpine
     name: adhocpod7
-    volumeMounts:
-    - name: adhoc/adhocoutput.txt
-      mountPath: /mnt/data.txt
-    command: ["bin/sh","-c","while true ; do date >> /adhoc/adhocoutput.txt ; sleep 3 ; done"]
+    command: ["bin/sh","-c","while true ; do date >> /mnt/date.txt ; sleep 3 ; done"]
   dnsPolicy: ClusterFirst
   restartPolicy: Always
 status:
   phase: Pending
   qosClass: BestEffort
+
+# then create the pod using the command
+
+kubectl create -f q7.yml -n jayesh                            # -n jayesh for namespace
+
+# then after 3 minutes use commands as
+
+1. kubectl exec -it adhocpod7 sh
+
+2. cat mnt/date.txt
+
+3. copy the output and paste in adhocoutput.txt
