@@ -31,6 +31,7 @@ metadata:
 spec:
  ports: 
   - name: mysvcport
+    nodePort: 32910
     port: 4455 
     targetPort: 80
  selector:
@@ -43,6 +44,12 @@ spec:
 kubectl create -f q3.yml -n jayesh                                # -n is used to select namespace and jayesh id namespace name
 
 kubectl create -f q3svc.yml -n jayesh
+
+# second way to create the service
+
+kubectl create service nodeport q3svcjayesh --tcp 80 --node-port 32910 --dry-run=client -o yaml > q3svc.yml 
+
+# then provide the required labels in service file
 
 # for checking the creating use command
 
