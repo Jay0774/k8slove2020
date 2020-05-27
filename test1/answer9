@@ -1,0 +1,42 @@
+# first create the pod file jenkins.yml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    adhoc: jayeshq9
+    run: jenkinspod1
+  name: jenkinspod1
+spec:
+  containers:
+  - image: jenkins
+    name: jenkinspod1
+    ports:
+    - containerPort: 8080
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+
+# then create the pod as
+
+kubectl create -f jenkins.yml -n jayesh                                        # -n jayesh for namespace
+
+# then to access the pod without using the service use command port-forward
+
+kubectl port-forward -n jayesh pod/jenkinspod1 4457:8080
+
+# after this check the ip address provided as
+
+127.0.0.1:4457                                                                  (here the pod is accessible)
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+# usage of port-forwarding
+
+kubectl port-forward -n <namespace_name> <podname> <loacl_port_no>:<target_port_no>
+
+# local port no can be anything but should not be any reserved port no.
+# the application can be accessibe at
+
+IP_ADDRESS: 127.0.0.1:<local-port_no>
