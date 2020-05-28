@@ -1,6 +1,6 @@
 # TASK2:
 ● Create a pod  named nginxpod  and use nginx docker image  
-●  Use port 80 as container and service port   
+● Use port 80 as container and service port   
 ● Create a service nodeport type by exposing the pod  
 ● Access web page and take screenshot of it   
 ● After accessing the web page you need to write a shell |  python | go code in current running  nginxpod   
@@ -11,26 +11,102 @@
 ● Comment that github link in youtube video session and in My linked account. 
 
 
-# To create the pod use nginxpod.yml file as:
+# creating the docker image for required task:
+
+# 1. create a starting script as getpods.sh written in python as:
+
+-> vim getpods.sh
+
+ python3 listpods.py > pods.html
+ cp pods.html /usr/share/nginx/html/pods.html
+ nginx -g "daemon off;"
+
+
+# 2. Python Script To List Pods 
+
+-> vim listpods.py
+
+ from kubernetes import client, config
+ config.load_incluster_config()
+ v1 = client.CoreV1Api()
+ print("Listing pods with their IPs:")
+ ret = v1.list_namespaced_pod(namespace='default', watch=False)
+ for i in ret.items:
+  print("%s\t%s\t%s" %
+   (i.status.pod_ip, i.metadata.namespace, i.metadata.name))
+
+
+# 3. creating docker file
+-> vim dockerfile
+
+ FROM nginx
+ RUN apt-get update
+ RUN apt install python3 python3-pip -y
+ RUN pip3 install kubernetes
+ COPY getpods.sh /opt/getpods.sh
+ COPY listpods.py /opt/listpods.py
+ WORKDIR /opt
+ RUN chmod +x getpods.sh
+ ENTRYPOINT /opt/getpods.sh
+
+# Building Image 
+docker build -t jayeshbudhwani1999/nginxpod .
+
+# Pushing image
+
+-> docker login
+-> docker push jayeshbudhwani1999/nginxpod
+
+# Creating RoleBinding Resource To View Running Pods Using default user & default namespace vim rolebind.yaml
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: view-pods
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: view
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: default
+
+
+# Creating Role Binding Service From yaml
+
+kubectl create -f role.yaml
+
+# Creating Pod file using Dockerfile as pod.yml
 
 apiVersion: v1
 kind: Pod
 metadata:
-  labels:
-    x: hello
-    run: nginxpod
-  name: nginxpod
+ name: nginxpod
+ labels:
+  task2: ngixpod
+  app: nginx
 spec:
-  containers:
-  - image: nginx
-    name: nginxpod
+ serviceAccountName: default
+ containers:
+  - name: nginxcont
+    image: jayeshbudhwani1999/nginxpod
     ports:
-    - containerPort: 80
-    resources: {}
-  dnsPolicy: ClusterFirst
-  restartPolicy: Always
-status: {}
+     - containerPort: 80
 
+
+# Creating pod from yaml
+
+kubectl create -f pod.yml
+
+# Exposing Pod
+
+kubectl expose pod nginxpod --type NodePort --port 80
+
+# Getting Nodeport
+
+kubectl get svc
 
 # To run the service use nginxsvc.yml file as: 
 
@@ -44,8 +120,9 @@ spec:
     port: 4455 
     targetPort: 80
  selector:
-  x: hello
+  task2: ngixpod
  type: NodePort
  
  # Now the output of above file is:
  
+ https://192.168.99.101:<nodeport>
