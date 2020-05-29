@@ -1,0 +1,94 @@
+ # Task3 : Email Pod:     
+ ● Very much similar to dynamic web app question but here we don’t need to store the data as  page   
+ ● Here we have to send all running pods and services names only  to  the email address   
+ ● Email id is learntechbyme@gmail.com  with subject <yournamek8slove2020>
+ 
+ # first create the docker image as:
+ 
+ # 1. create the following files as first one getpods.sh
+ 
+ python3 listpods.py > pods.txt
+ python3 sendmail.py
+ 
+ # 2. create the file listpods.py
+ 
+ from kubernetes import client, config
+
+config.load_incluster_config()
+v1 = client.CoreV1Api()
+print("Listing pods with their IPs:")
+ret = v1.list_namespaced_pod(namespace='default', watch=False)
+for i in ret.items:
+ print("%s\t%s\t%s" %
+  (i.status.pod_ip, i.metadata.namespace, i.metadata.name))
+  
+  # then create the file sendmail.py
+  
+  import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+with open ("pods.txt", "r") as myfile:
+ mail_content=myfile.read()
+#The mail addresses and password
+sender_address = 'me@gmail.com'
+sender_pass = 'pswd'
+receiver_address = 'learntechbyme@gmail.com'
+#Setup the MIME
+message = MIMEMultipart()
+message['From'] = sender_address
+message['To'] = receiver_address
+message['Subject'] = 'JAYESH BUDHWANI k8slove2020'  
+#The body and the attachments for the mail
+message.attach(MIMEText(mail_content, 'plain'))
+#Create SMTP session for sending the mail
+session = smtplib.SMTP('smtp.gmail.com', 587) 
+session.starttls() #enable security
+session.login(sender_address, sender_pass)
+text = message.as_string()
+session.sendmail(sender_address, receiver_address, text)
+session.quit()
+print('Mail Sent')
+
+
+# then create the dockerfile as :
+
+FROM nginx 
+RUN apt-get update
+RUN apt install python3 python3-pip -y
+RUN pip3 install kubernetes
+COPY sendmail.py /opt/sendmail.py
+COPY getpods.sh /opt/getpods.sh
+COPY listpods.py /opt/listpods.py
+WORKDIR /opt
+RUN chmod +x getpods.sh 
+ENTRYPOINT /opt/getpods.sh
+
+# then create the image and push on dockerhub as
+
+docker build -t jayeshbudhwani1999/k8stask3:v1 .
+docker login
+docker push jayeshbudhwani1999/k8stask3:v1 .
+
+# then create the podfile as task3.yml:
+
+apiVersion: v1
+kind: Pod
+metadata:
+ name: mail
+ labels:
+  x: hello
+  app: nginx
+spec:
+ serviceAccountName: default
+ containers:
+  - name: mail
+    image: jayeshbudhwani1999/k8stask3:v1
+    ports:
+     - containerPort: 80
+ restartPolicy: Never
+ 
+ # then create the pod as:
+ 
+ kubectl create -f task3.yml
+ 
+ 
